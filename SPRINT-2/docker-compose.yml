@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: vitrygtr
+      MYSQL_DATABASE: project
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: vitrygtr
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+  flask:
+    build:
+      context: ./Sprint1
+    container_name: flask_container
+    restart: always
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: vitrygtr
+      DB_NAME: project
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    volumes:
+      - ./Sprint1:/app
+
+volumes:
+  mysql_data:

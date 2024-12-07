@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title> Ouverture de Compte </title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='ouverturedecompte.css')}}">
+
+</head>
+
+<body>
+
+    <section>
+
+        
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+        
+
+
+        <div class="signin">
+
+            <div class="content">
+
+                <h2>Ouverture du Compte</h2>
+
+                <form action="{{url_for('ouverturedecompte')}}" method="post">
+
+                    <div class="form">
+
+                        <div class="inputBox">
+
+                            <label for="nom">Votre Nom:</label>
+
+                            <input type="text" id="nom" name="nom" required>
+
+                        </div>
+
+                        <div class="inputBox">
+
+                            <label for="prenom">Prénom:</label>
+
+                            <input type="text" id="prenom" name="prenom" required>
+
+                        </div>
+
+                        <div class="inputBox">
+
+                            <label for="email">Email:</label>
+
+                            <input type="email" id="email" name="email" required>
+
+                        </div>
+
+                        <div class="inputBox">
+
+                            <label for="password">Mot de Passe:</label>
+
+                            <input type="password" id="password" name="password" required oninput="validatePassword()">
+
+                            <div id="passwordCriteria">
+
+                                <p id="minLength">• Au moins 8 caractères</p>
+
+                                <p id="uppercase">• Au moins une majuscule</p>
+
+                                <p id="lowercase">• Au moins une minuscule</p>
+
+                                <p id="number">• Au moins un chiffre</p>
+
+                                <p id="specialChar">• Au moins un caractère spécial</p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="inputBox">
+
+                            <input type="submit" value="Soumettre" id="submitButton" disabled>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <script>
+
+        function validatePassword() {
+
+            const passwordInput = document.getElementById("password");
+
+            const password = passwordInput.value;
+
+            const minLength = document.getElementById("minLength");
+
+            const uppercase = document.getElementById("uppercase");
+
+            const lowercase = document.getElementById("lowercase");
+
+            const number = document.getElementById("number");
+
+            const specialChar = document.getElementById("specialChar");
+
+            const submitButton = document.getElementById("submitButton");
+
+
+            // Régex pour chaque critère
+
+            const lengthCheck = password.length >= 8;
+
+            const uppercaseCheck = /[A-Z]/.test(password);
+
+            const lowercaseCheck = /[a-z]/.test(password);
+
+            const numberCheck = /\d/.test(password);
+
+            const specialCharCheck = /[/!@#$%^&*(),.?":{}|<>]/.test(password);
+
+
+            // Applique une classe de style pour valider les critères remplis
+
+            minLength.style.color = lengthCheck ? "lightgreen" : "red";
+
+            uppercase.style.color = uppercaseCheck ? "lightgreen" : "red";
+
+            lowercase.style.color = lowercaseCheck ? "lightgreen" : "red";
+
+            number.style.color = numberCheck ? "lightgreen" : "red";
+
+            specialChar.style.color = specialCharCheck ? "lightgreen" : "red";
+
+
+            // Vérifie si tous les critères sont remplis pour activer le bouton de soumission
+
+            submitButton.disabled = !(lengthCheck && uppercaseCheck && lowercaseCheck && numberCheck && specialCharCheck);
+
+        }
+
+    </script>
+
+</body>
+
+</html>
