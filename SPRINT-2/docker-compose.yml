@@ -43,11 +43,38 @@ services:
     volumes:
       - ./Sprint2:/app
 
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - SERVERURL=auto
+      - SERVERPORT=51820
+      - PEERS=1
+      - PEERDNS=10.13.13.100
+      - INTERNAL_SUBNET=10.13.13.0
+    volumes:
+      - ./config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: always
+    networks:
+      wireguard-net:
+        ipv4_address: 10.13.13.100
+
+
   openldap:
     image: osixia/openldap:latest
     container_name: openldap
     hostname: openldap
-    restart: always
     ports:
       - "389:389"
       - "636:636"
@@ -61,13 +88,10 @@ services:
       - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=admin_pass
       - LDAP_CONFIG_PASSWORD=config_pass
-      - LDAP_BASE_DN=dc=rtlocal,dc=com
+      - "LDAP_BASE_DN=dc=rtlocal,dc=com"
       - LDAP_TLS_CRT_FILENAME=server.crt
       - LDAP_TLS_KEY_FILENAME=server.key
       - LDAP_TLS_CA_CRT_FILENAME=rtlocal.com.ca.crt
-      - LDAP_READONLY_USER=true
-      - LDAP_READONLY_USER_USERNAME=user-ro
-      - LDAP_READONLY_USER_PASSWORD=ro_pass
     networks:
       - my-network
 
@@ -75,9 +99,8 @@ services:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
     hostname: phpldapadmin
-    restart: always
     ports:
-      - "8081:80"
+      - '8081:80'
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=openldap
       - PHPLDAPADMIN_HTTPS=false
@@ -89,18 +112,26 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.6
     container_name: keycloak
-    restart: unless-stopped
     ports:
       - "8082:8080"
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+    - ./certificates:/etc/certs  # Monte les certificats LDAP
     command: ["start-dev"]
-
-volumes:
-  mysql_data:
-  openldap_data:
+    restart: unless-stopped
+    networks:
+      - my-network
 
 networks:
-  my-network:
+  my-network:  # Définition du réseau "my-network"
+    driver: bridge  # Optionnel, mais souvent utilisé par défaut
+  wireguard-net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.13.13.0/24
+volumes:
+  openldap_data:  # Définition du volume
+  mysql_data:

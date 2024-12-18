@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Arrêter tous les conteneurs en cours d'exécution
+echo "Arrêt de tous les conteneurs Docker..."
+docker stop $(docker ps -aq)
+
+# Supprimer tous les conteneurs
+echo "Suppression de tous les conteneurs Docker..."
+docker rm $(docker ps -aq)
+
+# Supprimer toutes les images
+echo "Suppression de toutes les images Docker..."
+docker rmi $(docker images -q) --force
+
+# Supprimer tous les volumes
+echo "Suppression de tous les volumes Docker..."
+docker volume rm $(docker volume ls -q)
+
+# Nettoyer les réseaux inutilisés
+echo "Suppression des réseaux Docker inutilisés..."
+docker network prune -f
+
+# Supprimer tous les systèmes de cache inutiles
+echo "Nettoyage des caches Docker..."
+docker system prune -af
+
+echo "Tous les conteneurs, images, volumes, réseaux et caches Docker ont été supprimés."
