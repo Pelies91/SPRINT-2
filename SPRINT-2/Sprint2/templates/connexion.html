@@ -296,28 +296,32 @@
             <div class="content">
                 <h2>Connectez-vous</h2>
                 <div class="form">
-                   
                     <form method="POST" action="{{ url_for('connexion') }}">
                         <div class="inputBox">
                             <input type="email" name="email" placeholder="Email" required>
                         </div>
-
+        
                         <div class="inputBox">
                             <input type="password" name="password" placeholder="Mot de passe" required>
                         </div>
-
+        
                         <div class="links">
                             <a href="#">Mot de passe oublié ?</a>
                             <a href="{{ url_for('ouverturedecompte') }}">S'inscrire</a>
                         </div>
-
+        
                         <div class="inputBox">
                             <input type="submit" value="Connexion">
+                        </div>
+                    
+                        <div class="inputBox">
+                            <a href="{{ url_for('connexion-interne') }}" class="btn">Compte Interne</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        
 
     </section>
 

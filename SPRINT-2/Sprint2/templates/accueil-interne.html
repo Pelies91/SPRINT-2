@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil interne</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='accueil-interne.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bienvenue, {{ user }} sur la plateforme interne</h1>
+            <p>Accédez à vos outils et informations essentielles.</p>
+        </div>
+        <div class="card">
+            <div class="card-item">
+                <img src="{{ url_for('static', filename='images/outilcollab.jpg') }}" alt="Outils collaboratifs">
+                <div class="content">
+                    <h3>Outils Collaboratifs</h3>
+                    <p>Accédez à vos outils de collaboration et de gestion de projet.</p>
+                    <a href="#">Accéder</a>
+                </div>
+            </div>
+
+            <div class="card-item">
+                <img src="{{ url_for('static', filename='images/rh.jpg') }}" alt="Ressources RH">
+                <div class="content">
+                    <h3>Ressources RH</h3>
+                    <p>Consultez vos documents administratifs et informations personnelles.</p>
+                    <a href="#">Voir</a>
+                </div>
+            </div>
+
+            <div class="card-item">
+                <img src="{{ url_for('static', filename='images/supporttech.jpg') }}" alt="Support technique">
+                <div class="content">
+                    <h3>Support Technique</h3>
+                    <p>Obtenez de l'aide pour résoudre vos problèmes techniques.</p>
+                    <a href="#">Contacter</a>
+                </div>
+            </div>
+
+            <div class="card-item">
+                <img src="{{ url_for('static', filename='images/actualite.jpg') }}" alt="Actualités">
+                <div class="content">
+                    <h3>Actualités</h3>
+                    <p>Restez informé des dernières nouvelles de l'entreprise.</p>
+                    <a href="#">Lire</a>
+                </div>
+            </div>
+        </div>
+        <form method="POST" action="{{ url_for('deconnexion') }}">
+            <button type="submit" class="button secondary">Déconnexion</button>
+        </form>
+    </div>
+</body>
+</html>

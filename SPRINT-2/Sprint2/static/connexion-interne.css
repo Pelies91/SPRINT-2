@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('cr-entreprise.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Filtre noir semi-transparent */
+    z-index: 1;
+}
+
+.signin {
+    position: relative;
+    width: 400px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.signin .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.signin .content h2 {
+    font-size: 2rem;
+    color: #0e0655;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.signin .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.signin .form .inputBox {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.signin .form .inputBox input {
+    width: 100%;
+    padding: 15px 10px;
+    background: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+.signin .form .inputBox input:focus {
+    border-color: #0e0655;
+    background: #fff;
+}
+
+.signin .form .links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.signin .form .links a {
+    text-decoration: none;
+    color: #007f00;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.signin .form .links a:hover {
+    color: #005a00;
+}
+
+.signin .form .inputBox input[type="submit"] {
+    background: #0e0655;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.signin .form .inputBox input[type="submit"]:hover {
+    background: #005a00;
+}

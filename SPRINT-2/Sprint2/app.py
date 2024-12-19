@@ -5,6 +5,7 @@ from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import random
+from ldap3 import Server, Connection, ALL, SIMPLE
 from dotenv import load_dotenv
 
 # Initialisation de l'application Flask
@@ -22,6 +23,17 @@ logger = logging.getLogger(__name__)
 # Configuration pour la base de données MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:vitrygtr@mysql/project'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configuration pour Flask-LDAP3-Login
+app.config['LDAP_HOST'] = 'ldap://oplenldap:389'
+app.config['LDAP_PORT'] = 389
+app.config['LDAP_BASE_DN'] = 'dc=rtlocal,dc=com'
+app.config['LDAP_USER_DN'] = 'ou=users'
+app.config['LDAP_GROUP_DN'] = 'ou=groups'
+app.config['LDAP_BIND_USER_DN'] = 'cn=admin,dc=rtlocal,dc=com'
+app.config['LDAP_BIND_USER_PASSWORD'] = 'admin_password'
+app.config['LDAP_USER_RDN_ATTR'] = 'uid'
+app.config['LDAP_USER_LOGIN_ATTR'] = 'uid'
 
 # Configuration pour Flask-Mail - plusieurs serveurs SMTP
 MAIL_SERVERS = {
@@ -104,7 +116,7 @@ def connexion():
         user = UserAccount.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             if not user.email_verified:
-                session["verification_email"] = email  # Stocker l'e-mail pour vérification
+                session["verification_email"] = email
                 flash("Veuillez vérifier votre adresse e-mail avant de vous connecter.", "error")
                 logger.warning("Tentative de connexion avec un e-mail non vérifié : %s", email)
                 return redirect(url_for("verification"))
@@ -133,7 +145,6 @@ def ouverturedecompte():
             return redirect(url_for("ouverturedecompte"))
 
         hashed_password = generate_password_hash(password)
-
         if UserAccount.query.filter_by(email=email).first():
             flash("Un compte avec cet email existe déjà.", "error")
             logger.warning("Tentative de création de compte avec un e-mail existant : %s", email)
@@ -144,12 +155,11 @@ def ouverturedecompte():
         db.session.add(new_user)
         db.session.commit()
 
-        # Envoi du code par e-mail
         msg = Message("Vérifiez votre adresse e-mail", recipients=[email])
         msg.body = f"Votre code de vérification est : {verification_code}"
         mail.send(msg)
 
-        session["verification_email"] = email  # Stocker l'e-mail dans la session
+        session["verification_email"] = email
         flash("Un e-mail de vérification vous a été envoyé.", "success")
         logger.info("Compte créé avec succès pour : %s", email)
         return redirect(url_for("verification"))
@@ -159,8 +169,7 @@ def ouverturedecompte():
 # Route pour vérifier le code
 @app.route("/verification", methods=["GET", "POST"])
 def verification():
-    email = session.get("verification_email")  # Récupérer l'e-mail de la session
-
+    email = session.get("verification_email")
     if not email:
         flash("Une erreur est survenue. Veuillez recommencer.", "error")
         logger.error("Vérification échouée : aucune adresse e-mail en session.")
@@ -173,7 +182,7 @@ def verification():
             user.email_verified = True
             user.verification_code = None
             db.session.commit()
-            session.pop("verification_email", None)  # Supprimer l'e-mail de la session
+            session.pop("verification_email", None)
             flash("Votre e-mail a été vérifié avec succès.", "success")
             logger.info("Vérification réussie pour l'utilisateur : %s", email)
             return redirect(url_for("connexion"))
@@ -182,20 +191,55 @@ def verification():
             logger.warning("Code de vérification incorrect pour l'e-mail : %s", email)
     return render_template("verification.html", email=email)
 
-# Route pour la page une fois connecté
-@app.route("/connecte")
-def connecte():
-    if "user_id" not in session:
-        logger.warning("Accès non autorisé à la page connectée sans connexion.")
-        return redirect(url_for("connexion"))
-    logger.info("Utilisateur connecté : %s", session.get("user_name"))
-    return render_template("connecte.html", nom=session["user_name"])
+# Route pour la connexion interne
+@app.route("/connexion-interne", methods=["GET", "POST"])
+def connexion_interne():
+    if "user_ldap" in session:
+        logger.info("Utilisateur interne déjà connecté.")
+        return redirect(url_for("accueil-interne"))
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # Configuration du serveur LDAP
+        ldap_server = app.config['LDAP_HOST']
+        ldap_port = app.config['LDAP_PORT']
+        ldap_base_dn = app.config['LDAP_BASE_DN']
+        ldap_user_rdn_attr = app.config['LDAP_USER_RDN_ATTR']
+        user_dn = f"{ldap_user_rdn_attr}={username},{ldap_base_dn}"
+
+        try:
+            server = Server(ldap_server, port=ldap_port, get_info=ALL)
+            conn = Connection(server, user=user_dn, password=password, authentication=SIMPLE)
+            if conn.bind():  # Tentative de connexion avec les identifiants
+                session["user_ldap"] = username
+                logger.info("Connexion LDAP réussie pour l'utilisateur : %s", username)
+                flash("Connexion réussie.", "success")
+                return redirect(url_for("accueil-interne"))
+            else:
+                flash("Identifiants LDAP incorrects.", "error")
+                logger.warning("Échec de la connexion LDAP pour l'utilisateur : %s", username)
+        except Exception as e:
+            logger.error("Erreur lors de la connexion LDAP : %s", str(e))
+            flash("Erreur de connexion au serveur LDAP.", "error")
+
+    return render_template("connexion-interne.html")
+
+# Route pour l'accueil interne
+@app.route("/accueil-interne")
+def accueil_interne():
+    if "user_ldap" not in session:
+        logger.warning("Accès non autorisé à la page interne sans connexion.")
+        return redirect(url_for("connexion-interne"))
+    logger.info("Utilisateur LDAP connecté : %s", session.get("user_ldap"))
+    return render_template("accueil-interne.html", user=session["user_ldap"])
 
 # Route pour la déconnexion
 @app.route("/deconnexion", methods=["GET", "POST"])
 def deconnexion():
     if request.method == "POST":
-        logger.info("Déconnexion de l'utilisateur : %s", session.get("user_name"))
+        logger.info("Déconnexion de l'utilisateur : %s", session.get("user_name") or session.get("user_ldap"))
         session.clear()
         flash("Déconnexion réussie.", "success")
         return redirect(url_for("connexion"))
