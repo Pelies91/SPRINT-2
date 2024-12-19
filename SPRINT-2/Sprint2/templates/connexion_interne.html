@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Utilisateur Interne</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='accueil_interne.css') }}">
+</head>
+
+<body>
+    <div class="signin">
+        <div class="content">
+            <h2>Connexion Interne</h2>
+            <div class="form">
+                <form method="POST" action="{{ url_for('connexion_interne') }}">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <p class="{{ category }}">{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    <div class="inputBox">
+                        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="password" name="password" placeholder="Mot de passe" required>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="submit" value="Se connecter">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

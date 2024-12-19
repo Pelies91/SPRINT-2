@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
-# CRC32 965b631e
+# CRC32 caf9ccbe
 dn: olcDatabase={1}mdb
 objectClass: olcDatabaseConfig
 objectClass: olcMdbConfig
@@ -26,7 +26,7 @@ olcAccess: {1}to attrs=userPassword,shadowLastChange by self write by dn="cn
  =admin,dc=rtlocal,dc=com" write by anonymous auth by * none
 olcAccess: {2}to * by self read by dn="cn=admin,dc=rtlocal,dc=com" write by 
  dn="cn=user-ro,dc=rtlocal,dc=com" read by * none
-olcRootPW:: e1NTSEF9dnRJMVVIRU5TUU1Xd0RqNXpRaCs1K2RJV01aaFNIOGM=
-entryCSN: 20241217143829.075058Z#000000#000#000000
+olcRootPW:: e1NTSEF9NW04TzgrajVSY1JyalBCZnl3cytBS0dXZ1dPNWtxT0w=
+entryCSN: 20241219231248.406601Z#000000#000#000000
 modifiersName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
-modifyTimestamp: 20241217143829Z
+modifyTimestamp: 20241219231248Z

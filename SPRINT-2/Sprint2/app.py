@@ -192,11 +192,11 @@ def verification():
     return render_template("verification.html", email=email)
 
 # Route pour la connexion interne
-@app.route("/connexion-interne", methods=["GET", "POST"])
+@app.route("/connexion_interne", methods=["GET", "POST"])
 def connexion_interne():
     if "user_ldap" in session:
         logger.info("Utilisateur interne déjà connecté.")
-        return redirect(url_for("accueil-interne"))
+        return redirect(url_for("accueil_interne"))
 
     if request.method == "POST":
         username = request.form["username"]
@@ -216,7 +216,7 @@ def connexion_interne():
                 session["user_ldap"] = username
                 logger.info("Connexion LDAP réussie pour l'utilisateur : %s", username)
                 flash("Connexion réussie.", "success")
-                return redirect(url_for("accueil-interne"))
+                return redirect(url_for("accueil_interne"))
             else:
                 flash("Identifiants LDAP incorrects.", "error")
                 logger.warning("Échec de la connexion LDAP pour l'utilisateur : %s", username)
@@ -224,16 +224,16 @@ def connexion_interne():
             logger.error("Erreur lors de la connexion LDAP : %s", str(e))
             flash("Erreur de connexion au serveur LDAP.", "error")
 
-    return render_template("connexion-interne.html")
+    return render_template("connexion_interne.html")
 
 # Route pour l'accueil interne
-@app.route("/accueil-interne")
+@app.route("/accueil_interne")
 def accueil_interne():
     if "user_ldap" not in session:
         logger.warning("Accès non autorisé à la page interne sans connexion.")
-        return redirect(url_for("connexion-interne"))
+        return redirect(url_for("connexion_interne"))
     logger.info("Utilisateur LDAP connecté : %s", session.get("user_ldap"))
-    return render_template("accueil-interne.html", user=session["user_ldap"])
+    return render_template("accueil_interne.html", user=session["user_ldap"])
 
 # Route pour la déconnexion
 @app.route("/deconnexion", methods=["GET", "POST"])
