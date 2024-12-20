@@ -12,6 +12,8 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - my-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -25,6 +27,8 @@ services:
       - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - my-network
 
   flask:
     build:
@@ -36,12 +40,16 @@ services:
       DB_USER: root
       DB_PASSWORD: vitrygtr
       DB_NAME: project
+      LDAP_HOST: openldap
+      LDAP_PORT: 389
     ports:
       - "5000:5000"
     depends_on:
       - mysql
     volumes:
       - ./Sprint2:/app
+    networks:
+      - my-network  # Added to the same network as mysql and openldap
 
   wireguard:
     image: linuxserver/wireguard
@@ -70,7 +78,6 @@ services:
       wireguard-net:
         ipv4_address: 10.13.13.100
 
-
   openldap:
     image: osixia/openldap:latest
     container_name: openldap
@@ -93,7 +100,7 @@ services:
       - LDAP_TLS_KEY_FILENAME=server.key
       - LDAP_TLS_CA_CRT_FILENAME=rtlocal.com.ca.crt
     networks:
-      - my-network
+      - my-network  # Same network as mysql and flask
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest
@@ -118,20 +125,22 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
     volumes:
-    - ./certificates:/etc/certs  # Monte les certificats LDAP
+    - ./certificates:/etc/certs  # Mount LDAP certificates
     command: ["start-dev"]
     restart: unless-stopped
     networks:
       - my-network
 
 networks:
-  my-network:  # Définition du réseau "my-network"
-    driver: bridge  # Optionnel, mais souvent utilisé par défaut
+  my-network:  # Defined "my-network" for common network
+    driver: bridge  # Default bridge driver used
   wireguard-net:
     driver: bridge
     ipam:
       config:
         - subnet: 10.13.13.0/24
+
 volumes:
-  openldap_data:  # Définition du volume
+  openldap_data:  # Defining volumes
   mysql_data:
+

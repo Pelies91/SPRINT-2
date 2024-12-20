@@ -25,15 +25,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:vitrygtr@my
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configuration pour Flask-LDAP3-Login
-app.config['LDAP_HOST'] = 'ldap://oplenldap:389'
+app.config['LDAP_HOST'] = 'ldap://openldap:389'
 app.config['LDAP_PORT'] = 389
 app.config['LDAP_BASE_DN'] = 'dc=rtlocal,dc=com'
 app.config['LDAP_USER_DN'] = 'ou=users'
-app.config['LDAP_GROUP_DN'] = 'ou=groups'
 app.config['LDAP_BIND_USER_DN'] = 'cn=admin,dc=rtlocal,dc=com'
-app.config['LDAP_BIND_USER_PASSWORD'] = 'admin_password'
-app.config['LDAP_USER_RDN_ATTR'] = 'uid'
-app.config['LDAP_USER_LOGIN_ATTR'] = 'uid'
+app.config['LDAP_BIND_USER_PASSWORD'] = 'admin_pass'
+app.config['LDAP_USER_RDN_ATTR'] = 'cn'
+app.config['LDAP_USER_LOGIN_ATTR'] = 'cn'
+app.config['LDAP_ALWAYS_SEARCH_BIND'] = True
 
 # Configuration pour Flask-Mail - plusieurs serveurs SMTP
 MAIL_SERVERS = {
@@ -191,7 +191,12 @@ def verification():
             logger.warning("Code de vérification incorrect pour l'e-mail : %s", email)
     return render_template("verification.html", email=email)
 
-# Route pour la connexion interne
+@app.route("/connecte")
+def connecte():
+    if "user_id" not in session:
+        return redirect(url_for("connexion"))
+    return render_template("connecte.html", nom=session["user_name"])
+
 @app.route("/connexion_interne", methods=["GET", "POST"])
 def connexion_interne():
     if "user_ldap" in session:
@@ -207,12 +212,14 @@ def connexion_interne():
         ldap_port = app.config['LDAP_PORT']
         ldap_base_dn = app.config['LDAP_BASE_DN']
         ldap_user_rdn_attr = app.config['LDAP_USER_RDN_ATTR']
-        user_dn = f"{ldap_user_rdn_attr}={username},{ldap_base_dn}"
+        user_dn = f"{ldap_user_rdn_attr}={username},{app.config['LDAP_USER_DN']},{ldap_base_dn}"
 
         try:
+            # Création de la connexion LDAP
             server = Server(ldap_server, port=ldap_port, get_info=ALL)
-            conn = Connection(server, user=user_dn, password=password, authentication=SIMPLE)
-            if conn.bind():  # Tentative de connexion avec les identifiants
+            conn = Connection(server, user=user_dn, password=password, auto_bind=True)
+            
+            if conn.bound:  # Vérifie si la connexion a réussi
                 session["user_ldap"] = username
                 logger.info("Connexion LDAP réussie pour l'utilisateur : %s", username)
                 flash("Connexion réussie.", "success")
@@ -242,7 +249,7 @@ def deconnexion():
         logger.info("Déconnexion de l'utilisateur : %s", session.get("user_name") or session.get("user_ldap"))
         session.clear()
         flash("Déconnexion réussie.", "success")
-        return redirect(url_for("connexion"))
+        return redirect(url_for("deconnexion"))
     return render_template("deconnexion.html")
 
 if __name__ == "__main__":

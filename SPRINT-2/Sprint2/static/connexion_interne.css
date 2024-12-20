@@ -1,3 +1,4 @@
+/* Réinitialisation globale */
 * {
     margin: 0;
     padding: 0;
@@ -5,6 +6,7 @@
     font-family: 'Quicksand', sans-serif;
 }
 
+/* Style du body */
 body {
     display: flex;
     justify-content: center;
@@ -26,6 +28,7 @@ body::after {
     z-index: 1;
 }
 
+/* Conteneur de connexion */
 .signin {
     position: relative;
     width: 400px;
@@ -50,17 +53,17 @@ body::after {
     margin-bottom: 20px;
 }
 
+/* Formulaire */
 .signin .form {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 }
 
 .signin .form .inputBox {
     position: relative;
     width: 100%;
-    margin-bottom: 15px;
 }
 
 .signin .form .inputBox input {
@@ -80,6 +83,7 @@ body::after {
     background: #fff;
 }
 
+/* Liens */
 .signin .form .links {
     display: flex;
     justify-content: space-between;
@@ -97,6 +101,7 @@ body::after {
     color: #005a00;
 }
 
+/* Bouton de soumission */
 .signin .form .inputBox input[type="submit"] {
     background: #0e0655;
     color: #fff;
