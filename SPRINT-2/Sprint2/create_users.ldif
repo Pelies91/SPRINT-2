@@ -1,4 +1,0 @@
-dn: ou=users,dc=rtlocal,dc=com
-objectClass: organizationalUnit
-ou: users
-
