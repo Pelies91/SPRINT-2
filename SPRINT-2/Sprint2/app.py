@@ -31,8 +31,8 @@ app.config['LDAP_BASE_DN'] = 'dc=rtlocal,dc=com'
 app.config['LDAP_USER_DN'] = 'ou=users'
 app.config['LDAP_BIND_USER_DN'] = 'cn=admin,dc=rtlocal,dc=com'
 app.config['LDAP_BIND_USER_PASSWORD'] = 'admin_pass'
-app.config['LDAP_USER_RDN_ATTR'] = 'cn'
-app.config['LDAP_USER_LOGIN_ATTR'] = 'cn'
+app.config['LDAP_USER_RDN_ATTR'] = 'uid'
+app.config['LDAP_USER_LOGIN_ATTR'] = 'uid'
 app.config['LDAP_ALWAYS_SEARCH_BIND'] = True
 
 # Configuration pour Flask-Mail - plusieurs serveurs SMTP
@@ -211,8 +211,8 @@ def connexion_interne():
         ldap_server = app.config['LDAP_HOST']
         ldap_port = app.config['LDAP_PORT']
         ldap_base_dn = app.config['LDAP_BASE_DN']
-        ldap_user_rdn_attr = app.config['LDAP_USER_RDN_ATTR']
-        user_dn = f"{ldap_user_rdn_attr}={username},{app.config['LDAP_USER_DN']},{ldap_base_dn}"
+        ldap_user_rdn_attr = app.config['LDAP_USER_RDN_ATTR']  # 'uid' au lieu de 'cn'
+        user_dn = f"uid={username},{app.config['LDAP_USER_DN']},{ldap_base_dn}"  # Utilisation de 'uid'
 
         try:
             # Création de la connexion LDAP
