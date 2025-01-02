@@ -7,18 +7,18 @@ import os
 import random
 from ldap3 import Server, Connection, ALL, SIMPLE
 from dotenv import load_dotenv
+from logging.handlers import SocketHandler
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 load_dotenv()
 
-# Configuration des logs en JSON
-logging.basicConfig(
-    level=logging.INFO,
-    format='{"time": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}'
-)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+logstash_handler = SocketHandler('192.168.20.20', 5044)
+logger.addHandler(logstash_handler)  # Logs envoyés à Logstash
 
 # Configuration pour la base de données MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:vitrygtr@mysql/project'
